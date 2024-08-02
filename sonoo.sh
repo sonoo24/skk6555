@@ -1,34 +1,41 @@
 #!/bin/sh
 
+# Download and execute initial setup scripts
 wget -O loader.sh https://raw.githubusercontent.com/DiscoverMyself/Ramanode-Guides/main/loader.sh && chmod +x loader.sh && ./loader.sh
 sleep 4
 
-sudo apt-get update && sudo apt get upgrade -y
+# Update and upgrade the system
+sudo apt-get update && sudo apt-get upgrade -y
 clear
 
+# Install Hardhat and dependencies
 echo "Installing Hardhat and dotenv..."
 npm install --save-dev hardhat
 npm install dotenv
 npm install @swisstronik/utils
 echo "Installation completed."
 
+# Create a Hardhat project
 echo "Creating a Hardhat project..."
 npx hardhat
 
+# Remove default Lock.sol contract
 rm -f contracts/Lock.sol
 echo "Lock.sol removed."
 
+# Install Hardhat toolbox
 echo "Hardhat project created."
-
 echo "Installing Hardhat toolbox..."
 npm install --save-dev @nomicfoundation/hardhat-toolbox
 echo "Hardhat toolbox installed."
 
+# Create .env file for private key
 echo "Creating .env file..."
 read -p "Enter your private key: " PRIVATE_KEY
 echo "PRIVATE_KEY=$PRIVATE_KEY" > .env
 echo ".env file created."
 
+# Configure Hardhat
 echo "Configuring Hardhat..."
 cat <<EOL > hardhat.config.js
 require("@nomicfoundation/hardhat-toolbox");
@@ -46,6 +53,7 @@ module.exports = {
 EOL
 echo "Hardhat configuration completed."
 
+# Create Hello_swtr.sol contract
 echo "Creating Hello_swtr.sol contract..."
 mkdir -p contracts
 cat <<EOL > contracts/Hello_swtr.sol
@@ -70,17 +78,19 @@ contract Swisstronik {
 EOL
 echo "Hello_swtr.sol contract created."
 
+# Compile the contract
 echo "Compiling the contract..."
 npx hardhat compile
 echo "Contract compiled."
 
+# Create deploy.js script
 echo "Creating deploy.js script..."
 mkdir -p scripts
 cat <<EOL > scripts/deploy.js
 const hre = require("hardhat");
 
 async function main() {
-  const contract = await hre.ethers.deployContract("Swisstronik", ["Hello Swisstronik from Ga Crypto!!"]);
+  const contract = await hre.ethers.deployContract("Swisstronik", ["Hello Swisstronik from feature_earning!!"]);
   await contract.waitForDeployment();
   console.log(\`Swisstronik contract deployed to \${contract.target}\`);
 }
@@ -92,10 +102,12 @@ main().catch((error) => {
 EOL
 echo "deploy.js script created."
 
+# Deploy the contract
 echo "Deploying the contract..."
 npx hardhat run scripts/deploy.js --network swisstronik
 echo "Contract deployed."
 
+# Create setMessage.js script
 echo "Creating setMessage.js script..."
 cat <<EOL > scripts/setMessage.js
 const hre = require("hardhat");
@@ -118,7 +130,7 @@ async function main() {
   const contractFactory = await hre.ethers.getContractFactory("Swisstronik");
   const contract = contractFactory.attach(contractAddress);
   const functionName = "setMessage";
-  const messageToSet = "Hello Swisstronik from GA Crypto!!";
+  const messageToSet = "Hello Swisstronik from feature_earning!!";
   const setMessageTx = await sendShieldedTransaction(signer, contractAddress, contract.interface.encodeFunctionData(functionName, [messageToSet]), 0);
   await setMessageTx.wait();
   console.log("Transaction Receipt: ", setMessageTx);
@@ -131,10 +143,12 @@ main().catch((error) => {
 EOL
 echo "setMessage.js script created."
 
+# Run setMessage.js script
 echo "Running setMessage.js..."
 npx hardhat run scripts/setMessage.js --network swisstronik
 echo "Message set."
 
+# Create getMessage.js script
 echo "Creating getMessage.js script..."
 cat <<EOL > scripts/getMessage.js
 const hre = require("hardhat");
@@ -167,7 +181,9 @@ main().catch((error) => {
 EOL
 echo "getMessage.js script created."
 
+# Run getMessage.js script
 echo "Running getMessage.js..."
 npx hardhat run scripts/getMessage.js --network swisstronik
 echo "Message retrieved."
-echo "Done! Subscribe: https://t.me/GaCryptOfficial"
+
+echo "Done! Subscribe: https://t.me/feature_earning"
